@@ -42,7 +42,7 @@ const INITIATIVES = [
 const HUNTERS = [
   {name:"María Guigard",      ini:"MG"},
   {name:"Martina Zasjman",    ini:"MZ"},
-  {name:"Estephania Lapenna", ini:"EL"},
+  {name:"Estefania Lapenna", ini:"EL"},
 ];
 const INI_MAP = Object.fromEntries(HUNTERS.map(h => [h.name, h.ini]));
 
@@ -854,7 +854,7 @@ function AllCalls({calls, initial}) {
           <Btn label="Todas"       active={hunter==="todas"}       onClick={()=>setHunter("todas")}/>
           <Btn label="María"       active={hunter==="María"}       onClick={()=>setHunter("María")}/>
           <Btn label="Martina"     active={hunter==="Martina"}     onClick={()=>setHunter("Martina")}/>
-          <Btn label="Estephania"  active={hunter==="Estephania"}  onClick={()=>setHunter("Estephania")}/>
+          <Btn label="Estefania"  active={hunter==="Estefania"}  onClick={()=>setHunter("Estefania")}/>
         </div>
         <div style={{overflowY:"auto",paddingRight:2}}>
           {vis.map(c=><CallRow key={c.id} call={c} onClick={()=>setSel(c)} active={sel?.id===c.id}/>)}
