@@ -61,12 +61,8 @@ export function mapRow(row) {
 
 export function getToday(calls) {
   if (!calls.length) return [];
-  const todayStr   = new Date().toLocaleDateString("es-AR", { day: "numeric", month: "short" });
-  const todayCalls = calls.filter(c => c.date === todayStr);
-  if (todayCalls.length) return todayCalls.sort((a, b) => b.risk - a.risk);
-  const recent     = [...calls].sort((a, b) => new Date(b.isoDate) - new Date(a.isoDate));
-  const latestDate = recent[0]?.date;
-  return recent.filter(c => c.date === latestDate).sort((a, b) => b.risk - a.risk);
+  const todayStr = new Date().toLocaleDateString("es-AR", { day: "numeric", month: "short" });
+  return calls.filter(c => c.date === todayStr).sort((a, b) => b.risk - a.risk);
 }
 
 export function getWeekGroups(calls) {

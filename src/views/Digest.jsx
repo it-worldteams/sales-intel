@@ -16,7 +16,7 @@ export default function Digest({ calls, onSelect }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
-        {[[`REUNIONES${calls.length ? " (hoy)" : ""}`, today.length, false, false], ["SCORE PROMEDIO", avg.toFixed(1), true, avg > 0 && avg < 7], ["ALERTAS CRÍTICAS", crits.length, false, crits.length > 0], ["SLACK ENVIADOS", crits.length, false, crits.length > 0]].map(([l, v, mono, alert], i) => (
+        {[[`REUNIONES (hoy)`, today.length, false, false], ["SCORE PROMEDIO", avg.toFixed(1), true, avg > 0 && avg < 7], ["ALERTAS CRÍTICAS", crits.length, false, crits.length > 0], ["SLACK ENVIADOS", crits.length, false, crits.length > 0]].map(([l, v, mono, alert], i) => (
           <div key={i} style={{ background: C.card, border: `1px solid ${alert ? C.redBd : C.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
             <Cap ch={l} />
             <div style={{ fontFamily: mono ? "'JetBrains Mono',monospace" : "inherit", fontSize: 30, fontWeight: 700, color: alert ? C.red : C.text, lineHeight: 1 }}>{v}</div>
@@ -39,8 +39,8 @@ export default function Digest({ calls, onSelect }) {
       )}
       <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 12 }}>
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
-          <Cap ch={today.length ? "Reuniones de hoy — por riesgo" : "Reuniones más recientes — por riesgo"} />
-          {today.length === 0 && <div style={{ color: C.muted, fontSize: 12, padding: "8px 0" }}>No hay reuniones para mostrar.</div>}
+          <Cap ch={today.length ? "Reuniones de hoy — por riesgo" : "Sin reuniones hoy"} />
+          {today.length === 0 && <div style={{ color: C.muted, fontSize: 12, padding: "8px 0" }}>No hay reuniones para mostrar hoy.</div>}
           {today.map(c => { const ct = c.risk >= 1.8; return (
             <div key={c.id} onClick={() => onSelect(c)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", background: C.faint, border: `1px solid ${ct ? C.redBd : C.border}`, borderLeft: `3px solid ${ct ? C.red : C.border}`, borderRadius: 9, cursor: "pointer", marginBottom: 5 }}>
               <div>

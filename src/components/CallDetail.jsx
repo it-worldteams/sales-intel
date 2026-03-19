@@ -101,7 +101,7 @@ export default function CallDetail({ call: c }) {
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 18, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
             <div style={{ width: 5, height: 5, borderRadius: "50%", background: C.accent }} />
-            <Cap ch="Feedback · Claude AI" mb={0} />
+            <Cap ch="Feedback AI" mb={0} />
           </div>
           <div style={{ color: C.sub, fontSize: 12.5, lineHeight: 2, whiteSpace: "pre-wrap" }}>
             {typed}
