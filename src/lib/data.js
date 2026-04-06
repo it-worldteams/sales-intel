@@ -3,10 +3,12 @@ import { riskOf } from "./risk.js";
 
 // Maps Supabase snake_case → dashboard camelCase
 export function mapRow(row) {
-  const dt       = new Date(row.date);
+  // Parse YYYY-MM-DD safely to avoid UTC shift
+  const [y, m, d] = row.date.split("-").map(Number);
+  const dt       = new Date(y, m - 1, d);
   const now      = new Date();
-  const diffMs   = now - dt;
-  const diffDays = Math.floor(diffMs / 86400000);
+  now.setHours(0, 0, 0, 0);
+  const diffDays = Math.floor((now - dt) / 86400000);
   const weekAgo  = Math.floor(diffDays / 7);
   const week     = Math.max(1, 13 - weekAgo);
 
@@ -61,8 +63,9 @@ export function mapRow(row) {
 
 export function getToday(calls) {
   if (!calls.length) return [];
-  const todayStr = new Date().toLocaleDateString("es-AR", { day: "numeric", month: "short" });
-  return calls.filter(c => c.date === todayStr).sort((a, b) => b.risk - a.risk);
+  const now = new Date();
+  const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  return calls.filter(c => c.isoDate === todayISO).sort((a, b) => b.risk - a.risk);
 }
 
 export function getWeekGroups(calls) {

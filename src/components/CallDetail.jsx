@@ -86,7 +86,7 @@ export default function CallDetail({ call: c }) {
         </div>
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
           <Cap ch="Dimensiones" />
-          {DIM_KEYS.map((k, i) => <DimBar key={k} label={DIM_LABELS[k]} value={typeof c[k] === "number" ? c[k] : 0} delay={i * 30} weak={k === wd} />)}
+          {DIM_KEYS.map((k, i) => <DimBar key={k} label={DIM_LABELS[k]} value={typeof c[k] === "number" ? c[k] : 0} delay={i * 30} weak={k === wd} isPercent={k === "talkRatio"} />)}
         </div>
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
           <Cap ch="Iniciativas mencionadas" />

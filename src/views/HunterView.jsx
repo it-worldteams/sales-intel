@@ -63,7 +63,7 @@ export default function HunterView({ calls }) {
             <LineChart data={wkData} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid stroke={C.border} strokeDasharray="3 3" />
               <XAxis dataKey="label" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis domain={[4, 10]} tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis domain={(wd?.key === "talkRatio" || sd?.key === "talkRatio") ? [0, 100] : [4, 10]} tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, color: C.text, fontSize: 11 }} cursor={{ stroke: C.border }} />
               <Line type="monotone" dataKey="avg" name="Score promedio" stroke={C.accent} strokeWidth={2} dot={{ r: 3, fill: C.accent }} connectNulls />
               {wd && <Line type="monotone" dataKey={wd.key} name={`Débil: ${wd.label}`} stroke={C.red} strokeWidth={1.5} strokeDasharray="4 2" dot={false} connectNulls />}
@@ -76,8 +76,10 @@ export default function HunterView({ calls }) {
           {dimAvgs.map(d => (
             <div key={d.key} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
               <div style={{ width: 100, fontSize: 11, color: C.muted }}>{d.label}</div>
-              <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}><div style={{ height: "100%", width: `${d.avg * 10}%`, background: d.avg < 6.5 ? C.red : C.borderHi, borderRadius: 99 }} /></div>
-              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.avg < 6.5 ? C.red : C.sub, width: 28, textAlign: "right" }}>{d.avg}</div>
+              <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}>
+                <div style={{ height: "100%", width: `${d.key === "talkRatio" ? d.avg : d.avg * 10}%`, background: d.avg < 6.5 && d.key !== "talkRatio" ? C.red : C.borderHi, borderRadius: 99 }} />
+              </div>
+              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.avg < 6.5 && d.key !== "talkRatio" ? C.red : C.sub, width: 34, textAlign: "right" }}>{d.avg}{d.key === "talkRatio" ? "%" : ""}</div>
               <div style={{ fontSize: 11, fontWeight: 700, width: 18, textAlign: "center", color: d.trend > 0.2 ? C.accent : d.trend < -0.2 ? C.red : C.muted }}>{d.trend > 0.2 ? "↑" : d.trend < -0.2 ? "↓" : "·"}</div>
             </div>
           ))}

@@ -59,7 +59,7 @@ export default function WeeklyView({ calls }) {
             <LineChart data={trendData} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
               <CartesianGrid stroke={C.border} strokeDasharray="3 3" />
               <XAxis dataKey="name" tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
-              <YAxis domain={[4, 10]} tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis domain={activeDim === "talkRatio" ? [20, 100] : [4, 10]} tick={{ fill: C.muted, fontSize: 10 }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, color: C.text, fontSize: 11 }} cursor={{ stroke: C.border }} />
               <Line type="monotone" dataKey="team" name="Equipo" stroke={C.accent} strokeWidth={2} dot={false} connectNulls />
               {activeDim && <Line type="monotone" dataKey={activeDim} name={DIM_LABELS[activeDim]} stroke={C.sub} strokeWidth={1.5} strokeDasharray="4 2" dot={false} connectNulls />}
@@ -73,8 +73,10 @@ export default function WeeklyView({ calls }) {
             <div key={d.key} onClick={() => setActiveDim(activeDim === d.key ? null : d.key)}
               style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7, cursor: "pointer", opacity: activeDim && activeDim !== d.key ? 0.4 : 1, transition: "opacity 0.15s" }}>
               <div style={{ width: 100, fontSize: 11, color: activeDim === d.key ? C.text : C.muted, flexShrink: 0 }}>{d.label}</div>
-              <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}><div style={{ height: "100%", width: `${d.curr * 10}%`, background: d.curr < 6.5 ? C.red : activeDim === d.key ? C.accent : C.borderHi, borderRadius: 99 }} /></div>
-              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.curr < 6.5 ? C.red : C.sub, width: 28, textAlign: "right" }}>{d.curr}</div>
+              <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}>
+                <div style={{ height: "100%", width: `${d.key === "talkRatio" ? d.curr : d.curr * 10}%`, background: d.curr < 6.5 && d.key !== "talkRatio" ? C.red : activeDim === d.key ? C.accent : C.borderHi, borderRadius: 99 }} />
+              </div>
+              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.curr < 6.5 && d.key !== "talkRatio" ? C.red : C.sub, width: 34, textAlign: "right" }}>{d.curr}{d.key === "talkRatio" ? "%" : ""}</div>
               <div style={{ fontSize: 10, fontWeight: 700, width: 32, textAlign: "right", color: d.delta > 0.1 ? C.accent : d.delta < -0.1 ? C.red : C.muted }}>{d.delta > 0.1 ? `+${d.delta}` : d.delta < -0.1 ? d.delta : "·"}</div>
             </div>
           ))}

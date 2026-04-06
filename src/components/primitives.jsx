@@ -29,23 +29,23 @@ export function Pill({ risk }) {
   );
 }
 
-export function DimBar({ label, value, delay, weak }) {
+export function DimBar({ label, value, delay, weak, isPercent }) {
   const safeVal = typeof value === "number" && isFinite(value) ? value : 0;
   const [pct, setPct] = useState(0);
   const tmr = useRef(null);
   useEffect(() => {
     clearTimeout(tmr.current);
     setPct(0);
-    tmr.current = setTimeout(() => setPct(safeVal * 10), 60 + (delay || 0));
+    tmr.current = setTimeout(() => setPct(isPercent ? safeVal : safeVal * 10), 60 + (delay || 0));
     return () => clearTimeout(tmr.current);
   }, [safeVal, delay]);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
       <div style={{ width: 126, fontSize: 11, flexShrink: 0, color: weak ? C.sub : C.muted, fontWeight: weak ? 600 : 400 }}>{label}</div>
       <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}>
-        <div style={{ height: "100%", width: `${pct}%`, background: weak && safeVal < 6.5 ? C.red : C.borderHi, borderRadius: 99, transition: "width 0.8s cubic-bezier(0.34,1.56,0.64,1)" }} />
+        <div style={{ height: "100%", width: `${pct}%`, background: weak && safeVal < 6.5 && !isPercent ? C.red : C.borderHi, borderRadius: 99, transition: "width 0.8s cubic-bezier(0.34,1.56,0.64,1)" }} />
       </div>
-      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: weak && safeVal < 6.5 ? C.red : C.sub, width: 28, textAlign: "right", fontWeight: weak ? 700 : 400 }}>{safeVal.toFixed(1)}</div>
+      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: weak && safeVal < 6.5 && !isPercent ? C.red : C.sub, width: 34, textAlign: "right", fontWeight: weak ? 700 : 400 }}>{safeVal.toFixed(isPercent ? 0 : 1)}{isPercent ? "%" : ""}</div>
     </div>
   );
 }
