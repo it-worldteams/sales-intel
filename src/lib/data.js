@@ -53,6 +53,7 @@ export function mapRow(row) {
     brief:    row.brief    || null,
     summary:  row.summary  || "",
     feedback: row.feedback || "",
+    video:    row.link_video || "",
     // Risk
     risk: row.risk_score != null ? row.risk_score : riskOf({
       avg: row.avg_score || 0,

@@ -75,13 +75,20 @@ export default function CallDetail({ call: c }) {
             </div>
             <div style={{ textAlign: "right" }}><Score v={safeAvg} lg /><div style={{ color: C.muted, fontSize: 9, marginTop: 4 }}>/10</div></div>
           </div>
-          <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 12, display: "flex", gap: 20, flexWrap: "wrap" }}>
+          <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 12, display: "flex", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
             {[["POTENTIAL", c.hs.potential.toUpperCase()], ["PIPELINE", stageLbl(c.hs.stage)], ["DEAL", fmtAmt(c.hs.amount)], ["RIESGO", rm.label]].map(([l, v], i) => (
               <div key={l}>
                 <div style={{ color: C.muted, fontSize: 9, letterSpacing: "0.06em", marginBottom: 3 }}>{l}</div>
                 <div style={{ color: i === 3 && crit ? C.red : C.text, fontSize: 12, fontWeight: 600, fontFamily: "'JetBrains Mono',monospace" }}>{v}</div>
               </div>
             ))}
+            {c.video && (
+              <a href={c.video} target="_blank" rel="noreferrer" style={{ textDecoration: "none", marginLeft: "auto" }}>
+                <div style={{ background: C.accentDim, border: `1px solid ${C.accentBd}`, borderRadius: 8, padding: "6px 12px", display: "flex", alignItems: "center", gap: 6, color: C.accent, fontSize: 11, fontWeight: 600, transition: "all 0.2s" }}>
+                  <span>🎬</span> Ver Grabación
+                </div>
+              </a>
+            )}
           </div>
         </div>
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
