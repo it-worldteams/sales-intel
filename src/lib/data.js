@@ -35,9 +35,9 @@ export function mapRow(row) {
     openQuestions:  row.open_questions   || 0,
     // HubSpot
     hs: {
-      potential: row.hs_potential || "low",
-      stage:     row.hs_stage     || "discovery",
-      amount:    row.hs_amount    || 0,
+      potential: row.hs_potential || null,
+      stage:     row.hs_stage     || null,
+      amount:    row.hs_amount    != null ? row.hs_amount : null,
       dealId:    row.hs_deal_id,
     },
     // Initiatives
@@ -55,10 +55,7 @@ export function mapRow(row) {
     feedback: row.feedback || "",
     video:    row.link_video || "",
     // Risk
-    risk: row.risk_score != null ? row.risk_score : riskOf({
-      avg: row.avg_score || 0,
-      hs: { potential: row.hs_potential || "low", stage: row.hs_stage || "discovery", amount: row.hs_amount || 0 },
-    }),
+    risk: row.risk_score != null ? row.risk_score : null,
   };
 }
 
@@ -66,7 +63,7 @@ export function getToday(calls) {
   if (!calls.length) return [];
   const now = new Date();
   const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-  return calls.filter(c => c.isoDate === todayISO).sort((a, b) => b.risk - a.risk);
+  return calls.filter(c => c.isoDate === todayISO).sort((a, b) => (b.risk || 0) - (a.risk || 0));
 }
 
 export function getWeekGroups(calls) {

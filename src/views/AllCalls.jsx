@@ -13,7 +13,7 @@ export default function AllCalls({ calls, initial }) {
   const vis = useMemo(() =>
     calls
       .filter(c => hunter === "todas" || c.hunter.includes(hunter))
-      .filter(c => filter === "criticas" ? c.risk >= 1.8 : filter === "high" ? c.hs.potential === "high" : filter === "cierre" ? c.hs.stage === "cierre" : true)
+      .filter(c => filter === "criticas" ? (c.risk || 0) >= 1.8 : filter === "high" ? c.hs.potential === "high" : filter === "cierre" ? c.hs.stage === "cierre" : true)
       .filter(c => (!start || c.isoDate >= start) && (!end || c.isoDate <= end))
       .slice(0, 100),
     [calls, filter, hunter, start, end]);

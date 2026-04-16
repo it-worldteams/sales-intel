@@ -64,7 +64,7 @@ export function CallRow({ call: c, onClick, active }) {
           <div style={{ color: C.muted, fontSize: 10, marginBottom: 5 }}>{c.date} · {c.deal}</div>
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <Pill risk={c.risk} />
-            <span style={{ color: C.muted, fontSize: 9 }}>{c.hs.potential.toUpperCase()} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)}</span>
+            <span style={{ color: C.muted, fontSize: 9 }}>{(c.hs.potential || "—").toUpperCase()} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)}</span>
           </div>
         </div>
         <Score v={c.avg} />

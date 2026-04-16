@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { C } from "./lib/theme.js";
+import { C, useTheme } from "./lib/theme.js";
 import { getToday } from "./lib/data.js";
 import { useCallsData } from "./hooks/useCallsData.js";
 import LoadingScreen from "./components/LoadingScreen.jsx";
@@ -18,6 +18,7 @@ const TABS = [
 
 export default function App() {
   const { calls, loading, error, refresh } = useCallsData();
+  const { isDark, toggle } = useTheme();
   const [tab,    setTab]    = useState("digest");
   const [passed, setPassed] = useState(null);
   const crits = useMemo(() => getToday(calls).filter(c => c.risk >= 1.8), [calls]);
@@ -29,9 +30,9 @@ export default function App() {
 
   return (
     <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
-      <header style={{ background: "rgba(244,247,251,0.94)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${C.border}`, padding: "0 24px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 20, boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
+      <header style={{ background: isDark ? "rgba(12,16,23,0.92)" : "rgba(244,247,251,0.94)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${C.border}`, padding: "0 24px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 20, boxShadow: isDark ? "0 1px 8px rgba(0,0,0,0.3)" : "0 1px 8px rgba(0,0,0,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <img src="https://worldteams.com/wp-content/uploads/2023/11/worldteams-logo-light.svg" alt="WorldTeams" style={{ height: 18, filter: "invert(1) brightness(0)" }} />
+          <img src="https://worldteams.com/wp-content/uploads/2023/11/worldteams-logo-light.svg" alt="WorldTeams" style={{ height: 18, filter: isDark ? "none" : "invert(1) brightness(0)" }} />
           <span style={{ width: 1, height: 16, background: C.border, display: "block" }} />
           <span style={{ color: C.muted, fontSize: 12 }}>Sales Intelligence</span>
           {crits.length > 0 && <span style={{ background: C.redDim, color: C.red, border: `1px solid ${C.redBd}`, borderRadius: 20, padding: "2px 9px", fontSize: 10, fontWeight: 700 }}>{crits.length} crítica{crits.length > 1 ? "s" : ""}</span>}
@@ -46,6 +47,7 @@ export default function App() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ color: C.muted, fontSize: 11 }}>{new Date().toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })}</span>
+          <button onClick={toggle} title={isDark ? "Modo claro" : "Modo oscuro"} style={{ background: "transparent", border: `1px solid ${C.border}`, borderRadius: 7, width: 28, height: 28, cursor: "pointer", color: C.muted, fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}>{isDark ? "☀️" : "🌙"}</button>
           <button onClick={refresh} title="Actualizar datos" style={{ background: "transparent", border: `1px solid ${C.border}`, borderRadius: 7, width: 28, height: 28, cursor: "pointer", color: C.muted, fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>↻</button>
         </div>
       </header>

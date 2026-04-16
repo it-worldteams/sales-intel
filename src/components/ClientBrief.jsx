@@ -72,7 +72,7 @@ export default function ClientBrief({ call: c }) {
           </div>
         </div>
         <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-          <Tag k="POTENTIAL" v={c.hs.potential.toUpperCase()} hl={c.hs.potential === "high"} />
+          <Tag k="POTENTIAL" v={c.hs.potential ? c.hs.potential.toUpperCase() : "—"} hl={c.hs.potential === "high"} />
           <Tag k="STAGE" v={stageLbl(c.hs.stage)} />
           {b.seccion_1_contexto?.usaron_outsourcing != null && <Tag k="OUTSOURCING PREVIO" v={b.seccion_1_contexto.usaron_outsourcing ? "Sí" : "No"} />}
         </div>

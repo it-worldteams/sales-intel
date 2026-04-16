@@ -13,12 +13,13 @@ export function riskOf(c) {
 }
 
 export function riskMeta(r) {
+  if (r == null) return { label: "SIN DATA", col: C.muted, bg: "transparent", bd: C.border };
   if (r >= 1.8) return { label: "CRÍTICO", col: C.red,   bg: C.redDim,      bd: C.redBd };
   if (r >= 1.0) return { label: "ALTO",    col: C.muted,  bg: C.faint,       bd: C.border };
   if (r >= 0.4) return { label: "MEDIO",   col: C.muted,  bg: "transparent", bd: C.border };
   return               { label: "OK",      col: C.muted,  bg: "transparent", bd: C.border };
 }
 
-export const stageLbl  = s => ({ cierre: "Cierre", propuesta: "Propuesta", discovery: "Discovery" })[s] || s;
-export const fmtAmt    = n => `$${((n || 0) / 1000).toFixed(0)}k`;
+export const stageLbl  = s => s ? (({ cierre: "Cierre", propuesta: "Propuesta", discovery: "Discovery" })[s] || s) : "No hay data";
+export const fmtAmt    = n => n != null ? `$${((n || 0) / 1000).toFixed(0)}k` : "No hay data";
 export const scoreCol  = v => v < 6.5 ? C.red : v < 7.5 ? C.sub : C.text;

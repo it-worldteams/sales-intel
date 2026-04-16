@@ -10,12 +10,19 @@
   width: 4px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #dde5f0;
+  background: #3a4d65;
   border-radius: 99px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 button {
   font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
 }
 
 @keyframes blink {

@@ -14,7 +14,7 @@ export default function HunterView({ calls }) {
   const [sel,  setSel]  = useState(null);
   useEffect(() => setSel(null), [name]);
 
-  const hc     = useMemo(() => calls.filter(c => c.hunter === name).sort((a, b) => b.week - a.week || b.risk - a.risk), [calls, name]);
+  const hc     = useMemo(() => calls.filter(c => c.hunter === name).sort((a, b) => b.week - a.week || (b.risk || 0) - (a.risk || 0)), [calls, name]);
   const wkData = useMemo(() => weekAgg(hc), [hc]);
 
   const dimAvgs = DIM_KEYS.map(k => {

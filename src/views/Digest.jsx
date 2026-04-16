@@ -30,7 +30,7 @@ export default function Digest({ calls, onSelect }) {
             <div key={c.id} onClick={() => onSelect(c)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 13px", background: C.card, border: `1px solid ${C.redBd}`, borderRadius: 9, cursor: "pointer", marginBottom: 5 }}>
               <div>
                 <div style={{ color: C.text, fontSize: 12, fontWeight: 600, marginBottom: 3 }}>{c.hunter.split(" ")[0]} → {c.prospect}</div>
-                <div style={{ color: C.muted, fontSize: 10 }}>{c.hs.potential.toUpperCase()} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)} · {c.deal}</div>
+                <div style={{ color: C.muted, fontSize: 10 }}>{(c.hs.potential || "—").toUpperCase()} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)} · {c.deal}</div>
               </div>
               <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 22, fontWeight: 700, color: C.red }}>{c.avg.toFixed(1)}</div>
             </div>
@@ -45,7 +45,7 @@ export default function Digest({ calls, onSelect }) {
             <div key={c.id} onClick={() => onSelect(c)} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px", background: C.faint, border: `1px solid ${ct ? C.redBd : C.border}`, borderLeft: `3px solid ${ct ? C.red : C.border}`, borderRadius: 9, cursor: "pointer", marginBottom: 5 }}>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 2 }}><span style={{ color: ct ? C.red : C.sub }}>{c.hunter.split(" ")[0]}</span><span style={{ color: C.muted }}> → {c.prospect}</span></div>
-                <div style={{ color: C.muted, fontSize: 10 }}>{c.hs.potential.toUpperCase()} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)}</div>
+                <div style={{ color: C.muted, fontSize: 10 }}>{(c.hs.potential || "—").toUpperCase()} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)}</div>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}><Pill risk={c.risk} /><Score v={c.avg} /></div>
             </div>

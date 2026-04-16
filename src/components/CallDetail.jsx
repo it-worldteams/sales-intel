@@ -52,7 +52,7 @@ export default function CallDetail({ call: c }) {
       {crit && (
         <div style={{ background: C.redDim, border: `1px solid ${C.redBd}`, borderLeft: `3px solid ${C.red}`, borderRadius: 10, padding: "12px 16px" }}>
           <div style={{ color: C.red, fontWeight: 700, fontSize: 13, marginBottom: 3 }}>Alerta crítica enviada — Slack + HubSpot</div>
-          <div style={{ color: C.sub, fontSize: 11 }}>Lead {c.hs.potential} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)} · Score {safeAvg}/10</div>
+          <div style={{ color: C.sub, fontSize: 11 }}>Lead {c.hs.potential || "No hay data"} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)} · Score {safeAvg}/10</div>
         </div>
       )}
       <div style={{ display: "flex", gap: 2, background: C.faint, border: `1px solid ${C.border}`, borderRadius: 9, padding: 3, alignSelf: "flex-start" }}>
@@ -76,7 +76,7 @@ export default function CallDetail({ call: c }) {
             <div style={{ textAlign: "right" }}><Score v={safeAvg} lg /><div style={{ color: C.muted, fontSize: 9, marginTop: 4 }}>/10</div></div>
           </div>
           <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 12, display: "flex", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
-            {[["POTENTIAL", c.hs.potential.toUpperCase()], ["PIPELINE", stageLbl(c.hs.stage)], ["DEAL", fmtAmt(c.hs.amount)], ["RIESGO", rm.label]].map(([l, v], i) => (
+            {[["POTENTIAL", (c.hs.potential || "No hay data").toUpperCase()], ["PIPELINE", stageLbl(c.hs.stage)], ["DEAL", fmtAmt(c.hs.amount)], ["RIESGO", rm.label]].map(([l, v], i) => (
               <div key={l}>
                 <div style={{ color: C.muted, fontSize: 9, letterSpacing: "0.06em", marginBottom: 3 }}>{l}</div>
                 <div style={{ color: i === 3 && crit ? C.red : C.text, fontSize: 12, fontWeight: 600, fontFamily: "'JetBrains Mono',monospace" }}>{v}</div>
