@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 import { C } from "../lib/theme.js";
 import { HUNTERS } from "../lib/constants.js";
-import { riskMeta, stageLbl, fmtAmt } from "../lib/risk.js";
+import { riskMeta, scoreCol, stageLbl, fmtAmt } from "../lib/risk.js";
 import { getToday, weekAgg } from "../lib/data.js";
 import { Cap, Score, Pill } from "../components/primitives.jsx";
 
@@ -16,10 +16,10 @@ export default function Digest({ calls, onSelect }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
-        {[[`REUNIONES (hoy)`, today.length, false, false], ["SCORE PROMEDIO", avg.toFixed(1), true, avg > 0 && avg < 7], ["ALERTAS CRÍTICAS", crits.length, false, crits.length > 0], ["SLACK ENVIADOS", crits.length, false, crits.length > 0]].map(([l, v, mono, alert], i) => (
-          <div key={i} style={{ background: C.card, border: `1px solid ${alert ? C.redBd : C.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
+        {[[`REUNIONES (hoy)`, today.length, false, null], ["SCORE PROMEDIO", avg.toFixed(1), true, avg > 0 ? (avg < 7 ? "bad" : "good") : null], ["ALERTAS CRÍTICAS", crits.length, false, crits.length > 0 ? "bad" : null], ["SLACK ENVIADOS", crits.length, false, crits.length > 0 ? "bad" : null]].map(([l, v, mono, state], i) => (
+          <div key={i} style={{ background: C.card, border: `1px solid ${state === "bad" ? C.redBd : state === "good" ? C.accentBd : C.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
             <Cap ch={l} />
-            <div style={{ fontFamily: mono ? "'JetBrains Mono',monospace" : "inherit", fontSize: 30, fontWeight: 700, color: alert ? C.red : C.text, lineHeight: 1 }}>{v}</div>
+            <div style={{ fontFamily: mono ? "'JetBrains Mono',monospace" : "'Space Grotesk', sans-serif", fontSize: 30, fontWeight: 700, color: state === "bad" ? C.red : state === "good" ? C.accent : C.text, lineHeight: 1 }}>{v}</div>
           </div>
         ))}
       </div>
@@ -32,7 +32,7 @@ export default function Digest({ calls, onSelect }) {
                 <div style={{ color: C.text, fontSize: 12, fontWeight: 600, marginBottom: 3 }}>{c.hunter.split(" ")[0]} → {c.prospect}</div>
                 <div style={{ color: C.muted, fontSize: 10 }}>{(c.hs.potential || "—").toUpperCase()} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)} · {c.deal}</div>
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 22, fontWeight: 700, color: C.red }}>{c.avg.toFixed(1)}</div>
+              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 22, fontWeight: 700, color: scoreCol(c.avg) }}>{c.avg.toFixed(1)}</div>
             </div>
           ))}
         </div>
@@ -71,7 +71,7 @@ export default function Digest({ calls, onSelect }) {
                 <div key={h.name} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <span style={{ color: C.muted, fontSize: 10, width: 20 }}>{h.ini}</span>
                   <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}><div style={{ height: "100%", width: `${av * 10}%`, background: C.borderHi, borderRadius: 99 }} /></div>
-                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: av && av < 7 ? C.red : C.sub, fontWeight: 600 }}>{av || "—"}</span>
+                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 12, color: av ? scoreCol(av) : C.sub, fontWeight: 600 }}>{av || "—"}</span>
                 </div>
               );
             })}

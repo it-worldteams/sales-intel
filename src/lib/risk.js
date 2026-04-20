@@ -22,4 +22,4 @@ export function riskMeta(r) {
 
 export const stageLbl  = s => s ? (({ cierre: "Cierre", propuesta: "Propuesta", discovery: "Discovery" })[s] || s) : "No hay data";
 export const fmtAmt    = n => n != null ? `$${((n || 0) / 1000).toFixed(0)}k` : "No hay data";
-export const scoreCol  = v => v < 6.5 ? C.red : v < 7.5 ? C.sub : C.text;
+export const scoreCol  = v => v < 7 ? C.red : C.accent;

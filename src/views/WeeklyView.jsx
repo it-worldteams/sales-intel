@@ -5,12 +5,13 @@ import {
 } from "recharts";
 import { C } from "../lib/theme.js";
 import { DIM_KEYS, DIM_LABELS, INITIATIVES, HUNTERS } from "../lib/constants.js";
-import { weekAgg } from "../lib/data.js";
+import { scoreCol } from "../lib/risk.js";
+import { weekAgg as weekAggData } from "../lib/data.js";
 import { Cap } from "../components/primitives.jsx";
 
 export default function WeeklyView({ calls }) {
   const [activeDim, setActiveDim] = useState(null);
-  const agg = useMemo(() => weekAgg(calls), [calls]);
+  const agg = useMemo(() => weekAggData(calls), [calls]);
 
   const trendData = agg.map(w => {
     const row = { name: w.label, team: w.avg };
@@ -40,11 +41,11 @@ export default function WeeklyView({ calls }) {
           { l: "SCORE ESTA SEMANA", v: (curr.avg || 0).toFixed(1), mono: true, sub: `${delta >= 0 ? "+" : ""}${delta} vs sem. anterior`, sc: delta >= 0 ? C.accent : C.red },
           { l: "CALLS ESTA SEMANA", v: curr.calls || 0, mono: false, sub: "equipo completo", sc: C.muted },
           { l: "MÁS FUERTE", v: sd?.label || "—", mono: false, sub: `${sd?.curr || 0}/10`, sc: C.sub },
-          { l: "A MEJORAR", v: wd?.label || "—", mono: false, sub: `${wd?.curr || 0}/10`, sc: (wd?.curr || 0) < 6.5 ? C.red : C.sub },
+          { l: "A MEJORAR", v: wd?.label || "—", mono: false, sub: `${wd?.curr || 0}/10`, sc: wd?.curr ? scoreCol(wd.curr) : C.sub },
         ].map((k, i) => (
           <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
             <Cap ch={k.l} />
-            <div style={{ fontSize: k.v.toString().length > 8 ? 15 : k.v.toString().length > 5 ? 20 : 28, fontFamily: k.mono ? "'JetBrains Mono',monospace" : "inherit", fontWeight: 700, color: C.text, lineHeight: 1, marginBottom: 6 }}>{k.v}</div>
+            <div style={{ fontSize: k.v.toString().length > 8 ? 15 : k.v.toString().length > 5 ? 20 : 28, fontFamily: k.mono ? "'JetBrains Mono',monospace" : "'Space Grotesk', sans-serif", fontWeight: 700, color: C.text, lineHeight: 1, marginBottom: 6 }}>{k.v}</div>
             <div style={{ color: k.sc, fontSize: 10 }}>{k.sub}</div>
           </div>
         ))}
@@ -74,9 +75,9 @@ export default function WeeklyView({ calls }) {
               style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7, cursor: "pointer", opacity: activeDim && activeDim !== d.key ? 0.4 : 1, transition: "opacity 0.15s" }}>
               <div style={{ width: 100, fontSize: 11, color: activeDim === d.key ? C.text : C.muted, flexShrink: 0 }}>{d.label}</div>
               <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}>
-                <div style={{ height: "100%", width: `${d.key === "talkRatio" ? d.curr : d.curr * 10}%`, background: d.curr < 6.5 && d.key !== "talkRatio" ? C.red : activeDim === d.key ? C.accent : C.borderHi, borderRadius: 99 }} />
+                <div style={{ height: "100%", width: `${d.key === "talkRatio" ? d.curr : d.curr * 10}%`, background: d.key !== "talkRatio" ? scoreCol(d.curr) : activeDim === d.key ? C.accent : C.borderHi, borderRadius: 99 }} />
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.curr < 6.5 && d.key !== "talkRatio" ? C.red : C.sub, width: 34, textAlign: "right" }}>{d.curr}{d.key === "talkRatio" ? "%" : ""}</div>
+              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.key !== "talkRatio" ? scoreCol(d.curr) : C.sub, width: 34, textAlign: "right" }}>{d.curr}{d.key === "talkRatio" ? "%" : ""}</div>
               <div style={{ fontSize: 10, fontWeight: 700, width: 32, textAlign: "right", color: d.delta > 0.1 ? C.accent : d.delta < -0.1 ? C.red : C.muted }}>{d.delta > 0.1 ? `+${d.delta}` : d.delta < -0.1 ? d.delta : "·"}</div>
             </div>
           ))}

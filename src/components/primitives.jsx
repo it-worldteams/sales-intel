@@ -4,7 +4,7 @@ import { riskMeta, scoreCol, stageLbl, fmtAmt } from "../lib/risk.js";
 
 export function Cap({ ch, mb = 10 }) {
   return (
-    <div style={{ color: C.muted, fontSize: 9, letterSpacing: "0.09em", marginBottom: mb, fontWeight: 700, textTransform: "uppercase" }}>
+    <div style={{ color: C.muted, fontSize: 9, letterSpacing: "0.09em", marginBottom: mb, fontWeight: 700, textTransform: "uppercase", fontFamily: "'Space Grotesk', sans-serif" }}>
       {ch}
     </div>
   );
@@ -43,9 +43,9 @@ export function DimBar({ label, value, delay, weak, isPercent }) {
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
       <div style={{ width: 126, fontSize: 11, flexShrink: 0, color: weak ? C.sub : C.muted, fontWeight: weak ? 600 : 400 }}>{label}</div>
       <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}>
-        <div style={{ height: "100%", width: `${pct}%`, background: weak && safeVal < 6.5 && !isPercent ? C.red : C.borderHi, borderRadius: 99, transition: "width 0.8s cubic-bezier(0.34,1.56,0.64,1)" }} />
+        <div style={{ height: "100%", width: `${pct}%`, background: weak && !isPercent ? scoreCol(safeVal) : C.borderHi, borderRadius: 99, transition: "width 0.8s cubic-bezier(0.34,1.56,0.64,1)" }} />
       </div>
-      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: weak && safeVal < 6.5 && !isPercent ? C.red : C.sub, width: 34, textAlign: "right", fontWeight: weak ? 700 : 400 }}>{safeVal.toFixed(isPercent ? 0 : 1)}{isPercent ? "%" : ""}</div>
+      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: weak && !isPercent ? scoreCol(safeVal) : C.sub, width: 34, textAlign: "right", fontWeight: weak ? 700 : 400 }}>{safeVal.toFixed(isPercent ? 0 : 1)}{isPercent ? "%" : ""}</div>
     </div>
   );
 }

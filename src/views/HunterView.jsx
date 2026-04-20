@@ -5,6 +5,7 @@ import {
 } from "recharts";
 import { C } from "../lib/theme.js";
 import { DIM_KEYS, DIM_LABELS, INITIATIVES, HUNTERS } from "../lib/constants.js";
+import { scoreCol, stageLbl, fmtAmt } from "../lib/risk.js";
 import { weekAgg } from "../lib/data.js";
 import { Cap, CallRow } from "../components/primitives.jsx";
 import CallDetail from "../components/CallDetail.jsx";
@@ -35,6 +36,31 @@ export default function HunterView({ calls }) {
   const wd = dimAvgs[0];
   const sd = dimAvgs[dimAvgs.length - 1];
 
+  const monthlyData = useMemo(() => {
+    const m = {};
+    hc.forEach(c => {
+      if (c.isoDate && c.isoDate >= "2026-01-01") {
+        const mm = c.isoDate.substring(0, 7);
+        if (!m[mm]) m[mm] = { count: 0, sum: 0 };
+        m[mm].count += 1;
+        m[mm].sum += (c.avg || 0);
+      }
+    });
+    return Object.entries(m)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => {
+        const [y, mStr] = k.split("-");
+        const dt = new Date(y, parseInt(mStr, 10) - 1, 1);
+        const label = dt.toLocaleDateString("es-AR", { month: "short", year: "numeric" });
+        return { 
+          key: k, 
+          label: label.charAt(0).toUpperCase() + label.slice(1), 
+          count: v.count,
+          avgScore: v.count > 0 ? +(v.sum / v.count).toFixed(1) : 0
+        };
+      });
+  }, [hc]);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -50,9 +76,9 @@ export default function HunterView({ calls }) {
         <div style={{ marginLeft: "auto", color: C.muted, fontSize: 11 }}>Cada hunter solo ve su propia vista</div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
-        {[["SCORE ESTA SEMANA", thisWavg.toFixed(1), true, thisWavg > 0 && thisWavg < 7], ["PROMEDIO 12 SEM.", overall.toFixed(1), true, false], ["TOTAL CALLS", hc.length, false, false], ["ALERTAS CRÍTICAS", critN, false, critN > 0]].map(([l, v, mono, alert], i) => (
-          <div key={i} style={{ background: C.card, border: `1px solid ${alert ? C.redBd : C.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
-            <Cap ch={l} /><div style={{ fontFamily: mono ? "'JetBrains Mono',monospace" : "inherit", fontSize: 30, fontWeight: 700, color: alert ? C.red : C.text, lineHeight: 1 }}>{v}</div>
+        {[["SCORE ESTA SEMANA", thisWavg.toFixed(1), true, thisWavg > 0 ? (thisWavg < 7 ? "bad" : "good") : null], ["PROMEDIO 12 SEM.", overall.toFixed(1), true, overall > 0 ? (overall < 7 ? "bad" : "good") : null], ["TOTAL CALLS", hc.length, false, null], ["ALERTAS CRÍTICAS", critN, false, critN > 0 ? "bad" : null]].map(([l, v, mono, state], i) => (
+          <div key={i} style={{ background: C.card, border: `1px solid ${state === "bad" ? C.redBd : state === "good" ? C.accentBd : C.border}`, borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
+            <Cap ch={l} /><div style={{ fontFamily: mono ? "'JetBrains Mono',monospace" : "'Space Grotesk', sans-serif", fontSize: 30, fontWeight: 700, color: state === "bad" ? C.red : state === "good" ? C.accent : C.text, lineHeight: 1 }}>{v}</div>
           </div>
         ))}
       </div>
@@ -77,9 +103,9 @@ export default function HunterView({ calls }) {
             <div key={d.key} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
               <div style={{ width: 100, fontSize: 11, color: C.muted }}>{d.label}</div>
               <div style={{ flex: 1, height: 3, background: C.faint, borderRadius: 99 }}>
-                <div style={{ height: "100%", width: `${d.key === "talkRatio" ? d.avg : d.avg * 10}%`, background: d.avg < 6.5 && d.key !== "talkRatio" ? C.red : C.borderHi, borderRadius: 99 }} />
+                <div style={{ height: "100%", width: `${d.key === "talkRatio" ? d.avg : d.avg * 10}%`, background: d.key !== "talkRatio" ? scoreCol(d.avg) : C.borderHi, borderRadius: 99 }} />
               </div>
-              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.avg < 6.5 && d.key !== "talkRatio" ? C.red : C.sub, width: 34, textAlign: "right" }}>{d.avg}{d.key === "talkRatio" ? "%" : ""}</div>
+              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.key !== "talkRatio" ? scoreCol(d.avg) : C.sub, width: 34, textAlign: "right" }}>{d.avg}{d.key === "talkRatio" ? "%" : ""}</div>
               <div style={{ fontSize: 11, fontWeight: 700, width: 18, textAlign: "center", color: d.trend > 0.2 ? C.accent : d.trend < -0.2 ? C.red : C.muted }}>{d.trend > 0.2 ? "↑" : d.trend < -0.2 ? "↓" : "·"}</div>
             </div>
           ))}
@@ -98,6 +124,23 @@ export default function HunterView({ calls }) {
               <div style={{ width: "100%", height: 2, background: C.border, borderRadius: 99, marginTop: 8 }}><div style={{ height: "100%", width: `${ini.pct}%`, background: col, borderRadius: 99 }} /></div>
             </div>
           ); })}
+        </div>
+      </div>
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+          <Cap ch="Reuniones mensuales — desde enero 2026" mb={0} />
+          <span style={{ color: C.muted, fontSize: 10 }}>Total y puntaje promedio</span>
+        </div>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          {monthlyData.length > 0 ? monthlyData.map(m => (
+            <div key={m.key} style={{ flex: 1, minWidth: 110, background: C.faint, border: `1px solid ${C.border}`, borderRadius: 10, padding: "12px 14px", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+              <div style={{ color: C.muted, fontSize: 11, marginBottom: 4, textTransform: "capitalize" }}>{m.label}</div>
+              <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 24, fontWeight: 700, color: C.text, lineHeight: 1 }}>{m.count} <span style={{ fontSize: 10, color: C.muted, fontWeight: 400, fontFamily: "inherit" }}>calls</span></div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: scoreCol(m.avgScore), background: m.avgScore < 7 ? C.redDim : C.accentDim, padding: "2px 8px", borderRadius: 20 }}>{m.avgScore.toFixed(1)} <span style={{ fontSize: 9, opacity: 0.8 }}>promedio</span></div>
+            </div>
+          )) : (
+            <div style={{ color: C.muted, fontSize: 12, padding: "10px 0" }}>No hay reuniones registradas desde enero 2026.</div>
+          )}
         </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 12 }}>

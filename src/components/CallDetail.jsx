@@ -6,17 +6,17 @@ import { Cap, Score, DimBar } from "./primitives.jsx";
 import ClientBrief from "./ClientBrief.jsx";
 
 export default function CallDetail({ call: c }) {
-  const [tab,   setTab]   = useState("analisis");
+  const [tab, setTab] = useState("analisis");
   const [typed, setTyped] = useState("");
   const ivRef = useRef(null);
   const fbRef = useRef("");
 
   const safeAvg = typeof c.avg === "number" ? c.avg : 0;
-  const rm      = riskMeta(c.risk || 0);
-  const crit    = rm.label === "CRÍTICO";
-  const wd      = DIM_KEYS.reduce((best, k) => {
+  const rm = riskMeta(c.risk || 0);
+  const crit = rm.label === "CRÍTICO";
+  const wd = DIM_KEYS.reduce((best, k) => {
     const bv = typeof c[best] === "number" ? c[best] : 10;
-    const kv = typeof c[k]    === "number" ? c[k]    : 10;
+    const kv = typeof c[k] === "number" ? c[k] : 10;
     return kv < bv ? k : best;
   }, DIM_KEYS[0]);
 
@@ -79,7 +79,7 @@ export default function CallDetail({ call: c }) {
             {[["POTENTIAL", (c.hs.potential || "No hay data").toUpperCase()], ["PIPELINE", stageLbl(c.hs.stage)], ["DEAL", fmtAmt(c.hs.amount)], ["RIESGO", rm.label]].map(([l, v], i) => (
               <div key={l}>
                 <div style={{ color: C.muted, fontSize: 9, letterSpacing: "0.06em", marginBottom: 3 }}>{l}</div>
-                <div style={{ color: i === 3 && crit ? C.red : C.text, fontSize: 12, fontWeight: 600, fontFamily: "'JetBrains Mono',monospace" }}>{v}</div>
+                <div style={{ color: i === 3 && crit ? C.red : C.text, fontSize: 12, fontWeight: 600, fontFamily: "'Space Grotesk',sans-serif" }}>{v}</div>
               </div>
             ))}
             {c.video && (

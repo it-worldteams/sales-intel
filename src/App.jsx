@@ -29,12 +29,12 @@ export default function App() {
   if (error)   return <ErrorScreen msg={error} onRetry={refresh} />;
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "'Plus Jakarta Sans',sans-serif" }}>
+    <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "'Manrope',sans-serif" }}>
       <header style={{ background: isDark ? "rgba(12,16,23,0.92)" : "rgba(244,247,251,0.94)", backdropFilter: "blur(20px)", borderBottom: `1px solid ${C.border}`, padding: "0 24px", height: 56, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 20, boxShadow: isDark ? "0 1px 8px rgba(0,0,0,0.3)" : "0 1px 8px rgba(0,0,0,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <img src="https://worldteams.com/wp-content/uploads/2023/11/worldteams-logo-light.svg" alt="WorldTeams" style={{ height: 18, filter: isDark ? "none" : "invert(1) brightness(0)" }} />
           <span style={{ width: 1, height: 16, background: C.border, display: "block" }} />
-          <span style={{ color: C.muted, fontSize: 12 }}>Sales Intelligence</span>
+          <span style={{ color: C.muted, fontSize: 12, fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600 }}>Sales Intelligence</span>
           {crits.length > 0 && <span style={{ background: C.redDim, color: C.red, border: `1px solid ${C.redBd}`, borderRadius: 20, padding: "2px 9px", fontSize: 10, fontWeight: 700 }}>{crits.length} crítica{crits.length > 1 ? "s" : ""}</span>}
         </div>
         <div style={{ display: "flex", gap: 1, background: C.faint, border: `1px solid ${C.border}`, borderRadius: 10, padding: 3 }}>
