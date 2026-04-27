@@ -25,7 +25,6 @@ export const INITIATIVES = [
 ];
 
 export const HUNTERS = [
-  { name: "Maria Guignard",     ini: "MG" },
   { name: "Martina Zajdman",    ini: "MZ" },
   { name: "Estefania Lapenna",  ini: "EL" },
 ];
