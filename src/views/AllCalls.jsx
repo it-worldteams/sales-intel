@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { C } from "../lib/theme.js";
 import { CallRow, Btn } from "../components/primitives.jsx";
 import CallDetail from "../components/CallDetail.jsx";
+import { Search, Trash2, X } from "lucide-react";
 
 export default function AllCalls({ calls, initial }) {
   const [sel,    setSel]    = useState(initial || (calls && calls.length > 0 ? calls[0] : null));
@@ -43,12 +44,7 @@ export default function AllCalls({ calls, initial }) {
           {(start || end) && (
             <button onClick={() => { setStart(""); setEnd(""); }}
               style={{ background: C.faint, border: `1px solid ${C.border}`, borderRadius: 7, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", color: C.red, cursor: "pointer", transition: "all 0.1s", padding: 0 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                <line x1="10" y1="11" x2="10" y2="17"></line>
-                <line x1="14" y1="11" x2="14" y2="17"></line>
-              </svg>
+              <Trash2 size={16} />
             </button>
           )}
         </div>
@@ -74,19 +70,13 @@ export default function AllCalls({ calls, initial }) {
             onFocus={e => e.target.style.borderColor = C.accent}
             onBlur={e => e.target.style.borderColor = C.border}
           />
-          <svg style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: C.muted }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
+          <Search style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: C.muted }} size={16} />
           {search && (
             <button 
               onClick={() => setSearch("")}
               style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: C.muted, cursor: "pointer", padding: 4, display: "flex", alignItems: "center" }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+              <X size={14} strokeWidth={3} />
             </button>
           )}
         </div>
@@ -102,3 +92,4 @@ export default function AllCalls({ calls, initial }) {
     </div>
   );
 }
+

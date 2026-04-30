@@ -4,6 +4,7 @@ import { DIM_KEYS, DIM_LABELS, INITIATIVES } from "../lib/constants.js";
 import { riskMeta, stageLbl, fmtAmt } from "../lib/risk.js";
 import { Cap, Score, DimBar } from "./primitives.jsx";
 import ClientBrief from "./ClientBrief.jsx";
+import { BarChart3, ClipboardList, Video, Check, Target, AlertCircle, Minus } from "lucide-react";
 
 export default function CallDetail({ call: c }) {
   const [tab, setTab] = useState("analisis");
@@ -22,13 +23,13 @@ export default function CallDetail({ call: c }) {
 
   // Use real AI feedback if available, else generic
   const feedbackText = c.feedback || [
-    `✅ Mantuvo buena conexión y generó rapport desde el inicio de la reunión.`,
-    `✅ Articuló el diferencial nearshore con claridad ante las preguntas técnicas.`,
+    `Mantuvo buena conexión y generó rapport desde el inicio de la reunión.`,
+    `Articuló el diferencial nearshore con claridad ante las preguntas técnicas.`,
     ``,
-    `🎯 ${DIM_LABELS[wd]} fue la dimensión más débil (${(c[wd] || 0).toFixed(1)}/10).`,
-    `🎯 Talk ratio: si superó el 60%, practicar preguntas abiertas antes de presentar soluciones.`,
+    `${DIM_LABELS[wd]} fue la dimensión más débil (${(c[wd] || 0).toFixed(1)}/10).`,
+    `Talk ratio: si superó el 60%, practicar preguntas abiertas antes de presentar soluciones.`,
     ``,
-    `📋 Ejercicio: preparar 3 preguntas de ${(DIM_LABELS[wd] || "").toLowerCase()} específicas para la próxima reunión con ${c.prospect}.`,
+    `Ejercicio: preparar 3 preguntas de ${(DIM_LABELS[wd] || "").toLowerCase()} específicas para la próxima reunión con ${c.prospect}.`,
   ].join("\n");
 
   fbRef.current = feedbackText;
@@ -46,19 +47,23 @@ export default function CallDetail({ call: c }) {
     return () => clearInterval(ivRef.current);
   }, [c.id, tab]);
 
-  const TABS = [["analisis", "📊 Análisis de Call"], ["brief", "📋 Client Brief"]];
+  const TABS = [["analisis", "Análisis de Call", BarChart3], ["brief", "Client Brief", ClipboardList]];
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {crit && (
-        <div style={{ background: C.redDim, border: `1px solid ${C.redBd}`, borderLeft: `3px solid ${C.red}`, borderRadius: 10, padding: "12px 16px" }}>
-          <div style={{ color: C.red, fontWeight: 700, fontSize: 13, marginBottom: 3 }}>Alerta crítica enviada — Slack + HubSpot</div>
-          <div style={{ color: C.sub, fontSize: 11 }}>Lead {c.hs.potential || "No hay data"} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)} · Score {safeAvg}/10</div>
+        <div style={{ background: C.redDim, border: `1px solid ${C.redBd}`, borderLeft: `3px solid ${C.red}`, borderRadius: 10, padding: "12px 16px", display: "flex", gap: 12, alignItems: "flex-start" }}>
+          <AlertCircle size={18} color={C.red} style={{ marginTop: 2 }} />
+          <div>
+            <div style={{ color: C.red, fontWeight: 700, fontSize: 13, marginBottom: 3 }}>Alerta crítica enviada — Slack + HubSpot</div>
+            <div style={{ color: C.sub, fontSize: 11 }}>Lead {c.hs.potential || "No hay data"} · {stageLbl(c.hs.stage)} · {fmtAmt(c.hs.amount)} · Score {safeAvg}/10</div>
+          </div>
         </div>
       )}
       <div style={{ display: "flex", gap: 2, background: C.faint, border: `1px solid ${C.border}`, borderRadius: 9, padding: 3, alignSelf: "flex-start" }}>
-        {TABS.map(([tid, lbl]) => (
+        {TABS.map(([tid, lbl, Icon]) => (
           <button key={tid} onClick={() => setTab(tid)}
-            style={{ background: tab === tid ? C.card : "transparent", color: tab === tid ? C.text : C.muted, border: `1px solid ${tab === tid ? C.border : "transparent"}`, borderRadius: 7, padding: "5px 14px", fontSize: 11, fontWeight: tab === tid ? 600 : 400, cursor: "pointer", transition: "all 0.12s" }}>
+            style={{ background: tab === tid ? C.card : "transparent", color: tab === tid ? C.text : C.muted, border: `1px solid ${tab === tid ? C.border : "transparent"}`, borderRadius: 7, padding: "5px 14px", fontSize: 11, fontWeight: tab === tid ? 600 : 400, cursor: "pointer", transition: "all 0.12s", display: "flex", alignItems: "center", gap: 6 }}>
+            <Icon size={14} />
             {lbl}
           </button>
         ))}
@@ -85,7 +90,7 @@ export default function CallDetail({ call: c }) {
             {c.video && (
               <a href={c.video} target="_blank" rel="noreferrer" style={{ textDecoration: "none", marginLeft: "auto" }}>
                 <div style={{ background: C.accentDim, border: `1px solid ${C.accentBd}`, borderRadius: 8, padding: "6px 12px", display: "flex", alignItems: "center", gap: 6, color: C.accent, fontSize: 11, fontWeight: 600, transition: "all 0.2s" }}>
-                  <span>🎬</span> Ver Grabación
+                  <Video size={14} /> Ver Grabación
                 </div>
               </a>
             )}
@@ -99,8 +104,8 @@ export default function CallDetail({ call: c }) {
           <Cap ch="Iniciativas mencionadas" />
           <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
             {INITIATIVES.map(ini => (
-              <span key={ini.key} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6, fontWeight: 500, background: c.initiatives[ini.key] ? C.accentDim : C.faint, color: c.initiatives[ini.key] ? C.accent : C.muted, border: `1px solid ${c.initiatives[ini.key] ? C.accentBd : C.border}` }}>
-                {c.initiatives[ini.key] ? "✓" : "–"} {ini.label}
+              <span key={ini.key} style={{ fontSize: 11, padding: "3px 10px", borderRadius: 6, fontWeight: 500, background: c.initiatives[ini.key] ? C.accentDim : C.faint, color: c.initiatives[ini.key] ? C.accent : C.muted, border: `1px solid ${c.initiatives[ini.key] ? C.accentBd : C.border}`, display: "flex", alignItems: "center", gap: 5 }}>
+                {c.initiatives[ini.key] ? <Check size={12} strokeWidth={3} /> : <Minus size={12} />} {ini.label}
               </span>
             ))}
           </div>

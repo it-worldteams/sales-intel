@@ -9,6 +9,7 @@ import { scoreCol, stageLbl, fmtAmt } from "../lib/risk.js";
 import { weekAgg } from "../lib/data.js";
 import { Cap, CallRow } from "../components/primitives.jsx";
 import CallDetail from "../components/CallDetail.jsx";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 export default function HunterView({ calls }) {
   const [name, setName] = useState(HUNTERS[0].name);
@@ -106,7 +107,9 @@ export default function HunterView({ calls }) {
                 <div style={{ height: "100%", width: `${d.key === "talkRatio" ? d.avg : d.avg * 10}%`, background: d.key !== "talkRatio" ? scoreCol(d.avg) : C.borderHi, borderRadius: 99 }} />
               </div>
               <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: d.key !== "talkRatio" ? scoreCol(d.avg) : C.sub, width: 34, textAlign: "right" }}>{d.avg}{d.key === "talkRatio" ? "%" : ""}</div>
-              <div style={{ fontSize: 11, fontWeight: 700, width: 18, textAlign: "center", color: d.trend > 0.2 ? C.accent : d.trend < -0.2 ? C.red : C.muted }}>{d.trend > 0.2 ? "↑" : d.trend < -0.2 ? "↓" : "·"}</div>
+              <div style={{ fontSize: 11, fontWeight: 700, width: 18, textAlign: "center", display: "flex", justifyContent: "center", color: d.trend > 0.2 ? C.accent : d.trend < -0.2 ? C.red : C.muted }}>
+                {d.trend > 0.2 ? <TrendingUp size={12} /> : d.trend < -0.2 ? <TrendingDown size={12} /> : <Minus size={12} />}
+              </div>
             </div>
           ))}
         </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { C } from "../lib/theme.js";
 import { riskMeta, scoreCol, stageLbl, fmtAmt } from "../lib/risk.js";
+import { AlertCircle } from "lucide-react";
 
 export function Cap({ ch, mb = 10 }) {
   return (
@@ -23,7 +24,20 @@ export function Pill({ risk }) {
   const m = riskMeta(risk);
   const crit = m.label === "CRÍTICO";
   return (
-    <span style={{ background: crit ? m.bg : C.faint, color: crit ? m.col : C.muted, border: `1px solid ${crit ? m.bd : C.border}`, borderRadius: 4, padding: "1px 7px", fontSize: 9, fontWeight: 700, letterSpacing: "0.04em" }}>
+    <span style={{ 
+      background: crit ? m.bg : C.faint, 
+      color: crit ? m.col : C.muted, 
+      border: `1px solid ${crit ? m.bd : C.border}`, 
+      borderRadius: 4, 
+      padding: "2px 7px", 
+      fontSize: 9, 
+      fontWeight: 700, 
+      letterSpacing: "0.04em",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 4
+    }}>
+      {crit && <AlertCircle size={10} strokeWidth={3} />}
       {m.label}
     </span>
   );
@@ -73,10 +87,25 @@ export function CallRow({ call: c, onClick, active }) {
   );
 }
 
-export function Btn({ label, active, onClick }) {
+export function Btn({ label, active, onClick, icon: Icon }) {
   return (
-    <button onClick={onClick} style={{ background: active ? C.text : C.card, color: active ? C.card : C.muted, border: `1px solid ${active ? C.text : C.border}`, borderRadius: 7, padding: "4px 10px", fontSize: 10, fontWeight: active ? 600 : 400, cursor: "pointer", transition: "all 0.12s" }}>
+    <button onClick={onClick} style={{ 
+      background: active ? C.text : C.card, 
+      color: active ? C.card : C.muted, 
+      border: `1px solid ${active ? C.text : C.border}`, 
+      borderRadius: 7, 
+      padding: "4px 10px", 
+      fontSize: 10, 
+      fontWeight: active ? 600 : 400, 
+      cursor: "pointer", 
+      transition: "all 0.12s",
+      display: "inline-flex",
+      alignItems: "center",
+      gap: 5
+    }}>
+      {Icon && <Icon size={12} />}
       {label}
     </button>
   );
 }
+
