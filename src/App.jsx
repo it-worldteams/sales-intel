@@ -2,13 +2,15 @@ import { useState, useMemo } from "react";
 import { C, useTheme } from "./lib/theme.js";
 import { getToday } from "./lib/data.js";
 import { useCallsData } from "./hooks/useCallsData.js";
+import { useAuth } from "./hooks/useAuth.js";
 import LoadingScreen from "./components/LoadingScreen.jsx";
 import ErrorScreen from "./components/ErrorScreen.jsx";
+import LoginScreen from "./components/LoginScreen.jsx";
 import Digest from "./views/Digest.jsx";
 import WeeklyView from "./views/WeeklyView.jsx";
 import HunterView from "./views/HunterView.jsx";
 import AllCalls from "./views/AllCalls.jsx";
-import { Sun, Moon, RefreshCw, AlertCircle } from "lucide-react";
+import { Sun, Moon, RefreshCw, AlertCircle, LogOut } from "lucide-react";
 
 const TABS = [
   { id: "digest", label: "Resumen del día" },
@@ -18,6 +20,7 @@ const TABS = [
 ];
 
 export default function App() {
+  const { user, loading: authLoading, signIn, signOut } = useAuth();
   const { calls, loading, error, refresh } = useCallsData();
   const { isDark, toggle } = useTheme();
   const [tab, setTab] = useState("digest");
@@ -26,6 +29,8 @@ export default function App() {
 
   const goToCall = c => { setPassed(c); setTab("all"); };
 
+  if (authLoading) return <LoadingScreen />;
+  if (!user) return <LoginScreen onLogin={signIn} />;
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen msg={error} onRetry={refresh} />;
 
@@ -53,11 +58,16 @@ export default function App() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ color: C.muted, fontSize: 11 }}>{new Date().toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" })}</span>
+          <span style={{ width: 1, height: 14, background: C.border, display: "block" }} />
+          <span style={{ color: C.muted, fontSize: 10, maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</span>
           <button onClick={toggle} title={isDark ? "Modo claro" : "Modo oscuro"} style={{ background: "transparent", border: `1px solid ${C.border}`, borderRadius: 7, width: 28, height: 28, cursor: "pointer", color: C.muted, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}>
             {isDark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
           <button onClick={refresh} title="Actualizar datos" style={{ background: "transparent", border: `1px solid ${C.border}`, borderRadius: 7, width: 28, height: 28, cursor: "pointer", color: C.muted, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <RefreshCw size={14} />
+          </button>
+          <button onClick={signOut} title="Cerrar sesión" style={{ background: "transparent", border: `1px solid ${C.border}`, borderRadius: 7, width: 28, height: 28, cursor: "pointer", color: C.muted, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}>
+            <LogOut size={14} />
           </button>
         </div>
       </header>
